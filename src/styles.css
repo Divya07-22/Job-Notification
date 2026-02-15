@@ -2155,3 +2155,420 @@ select.input {
   margin: var(--space-xs) 0;
 }
 
+
+/* ============================================
+   PROOF PAGE STYLES
+   ============================================ */
+
+.proof-grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.proof-card {
+  background: white;
+  border-radius: 8px;
+  padding: var(--space-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.proof-card__title {
+  margin: 0 0 var(--space-md) 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--space-sm);
+}
+
+/* Step List */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.step-item--completed {
+  background-color: #F1F8E9; /* Slight green tint */
+}
+
+.step-item__icon {
+  font-size: 1.1rem;
+}
+
+.step-item__label {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Artifact Form */
+.artifact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.input--error {
+  border-color: #D32F2F;
+  background-color: #FFEBEE;
+}
+
+/* Validation Status */
+.validation-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--space-lg);
+}
+
+.validation-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.validation-item--pass {
+  color: #2E7D32;
+  font-weight: 500;
+}
+
+.validation-item--fail {
+  color: #D32F2F;
+}
+
+.validation-link {
+  color: var(--primary-color);
+  text-decoration: underline;
+  margin-left: auto;
+  font-size: 0.85rem;
+}
+
+/* Actions */
+.proof-actions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.shipped-banner {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+  padding: var(--space-md);
+  border-radius: 8px;
+  margin-bottom: var(--space-lg);
+  font-weight: 500;
+  border: 1px solid #C8E6C9;
+  text-align: center;
+}
+
+.shipped-badge {
+  background-color: #2E7D32;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+
+/* ============================================
+   PROOF PAGE STYLES
+   ============================================ */
+
+.proof-grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.proof-card {
+  background: white;
+  border-radius: 8px;
+  padding: var(--space-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.proof-card__title {
+  margin: 0 0 var(--space-md) 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--space-sm);
+}
+
+/* Step List */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.step-item--completed {
+  background-color: #F1F8E9; /* Slight green tint */
+}
+
+.step-item__icon {
+  font-size: 1.1rem;
+}
+
+.step-item__label {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Artifact Form */
+.artifact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.input--error {
+  border-color: #D32F2F;
+  background-color: #FFEBEE;
+}
+
+/* Validation Status */
+.validation-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--space-lg);
+}
+
+.validation-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.validation-item--pass {
+  color: #2E7D32;
+  font-weight: 500;
+}
+
+.validation-item--fail {
+  color: #D32F2F;
+}
+
+.validation-link {
+  color: var(--primary-color);
+  text-decoration: underline;
+  margin-left: auto;
+  font-size: 0.85rem;
+}
+
+/* Actions */
+.proof-actions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.shipped-banner {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+  padding: var(--space-md);
+  border-radius: 8px;
+  margin-bottom: var(--space-lg);
+  font-weight: 500;
+  border: 1px solid #C8E6C9;
+  text-align: center;
+}
+
+.shipped-badge {
+  background-color: #2E7D32;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+
+/* ============================================
+   PROOF PAGE STYLES
+   ============================================ */
+
+.proof-grid {
+  display: grid;
+  gap: var(--space-lg);
+}
+
+.proof-card {
+  background: white;
+  border-radius: 8px;
+  padding: var(--space-lg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.proof-card__title {
+  margin: 0 0 var(--space-md) 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--space-sm);
+}
+
+/* Step List */
+.step-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.step-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.step-item--completed {
+  background-color: #F1F8E9; /* Slight green tint */
+}
+
+.step-item__icon {
+  font-size: 1.1rem;
+}
+
+.step-item__label {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Artifact Form */
+.artifact-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.input--error {
+  border-color: #D32F2F;
+  background-color: #FFEBEE;
+}
+
+/* Validation Status */
+.validation-status {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: var(--space-lg);
+}
+
+.validation-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.validation-item--pass {
+  color: #2E7D32;
+  font-weight: 500;
+}
+
+.validation-item--fail {
+  color: #D32F2F;
+}
+
+.validation-link {
+  color: var(--primary-color);
+  text-decoration: underline;
+  margin-left: auto;
+  font-size: 0.85rem;
+}
+
+/* Actions */
+.proof-actions {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.shipped-banner {
+  background-color: #E8F5E9;
+  color: #1B5E20;
+  padding: var(--space-md);
+  border-radius: 8px;
+  margin-bottom: var(--space-lg);
+  font-weight: 500;
+  border: 1px solid #C8E6C9;
+  text-align: center;
+}
+
+.shipped-badge {
+  background-color: #2E7D32;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
