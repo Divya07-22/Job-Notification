@@ -1,21 +1,29 @@
 import './styles.css'
-import TopBar from './components/TopBar'
-import ContextHeader from './components/ContextHeader'
-import PrimaryWorkspace from './components/PrimaryWorkspace'
-import SecondaryPanel from './components/SecondaryPanel'
-import ProofFooter from './components/ProofFooter'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import Navigation from './components/Navigation'
+import Home from './pages/Home'
+import Dashboard from './pages/Dashboard'
+import Saved from './pages/Saved'
+import Digest from './pages/Digest'
+import Settings from './pages/Settings'
+import Proof from './pages/Proof'
 
 function App() {
     return (
-        <div className="page-container">
-            <TopBar />
-            <ContextHeader />
-            <main className="main-workspace">
-                <PrimaryWorkspace />
-                <SecondaryPanel />
-            </main>
-            <ProofFooter />
-        </div>
+        <BrowserRouter>
+            <div className="page-container">
+                <Navigation />
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/dashboard" element={<Dashboard />} />
+                    <Route path="/saved" element={<Saved />} />
+                    <Route path="/digest" element={<Digest />} />
+                    <Route path="/settings" element={<Settings />} />
+                    <Route path="/proof" element={<Proof />} />
+                    <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+            </div>
+        </BrowserRouter>
     )
 }
 
