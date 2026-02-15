@@ -143,9 +143,6 @@ p {
   color: var(--color-text-primary);
 }
 
-.top-bar__status {
-  /* Status badge styles below */
-}
 
 /* CONTEXT HEADER */
 .context-header {
@@ -1752,4 +1749,220 @@ select.input {
   .digest-actions .btn {
     max-width: 100%;
   }
+}
+
+/* ============================================
+   STATUS TRACKING & NOTIFICATIONS
+   ============================================ */
+
+/* Status Dropdown in Job Card */
+.job-card__status {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+  margin: var(--space-sm) 0;
+  padding: 0 var(--space-md);
+}
+
+.job-card__status-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.status-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.status-dropdown__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  padding: var(--space-xs);
+  z-index: 100;
+  min-width: 140px;
+  margin-top: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.status-dropdown__item {
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.status-dropdown__item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.status-dropdown__item--active {
+  background-color: var(--primary-light);
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.status-badge--not-applied {
+  background-color: #F5F5F5;
+  color: #757575;
+  border: 1px solid #E0E0E0;
+}
+
+.status-badge--applied {
+  background-color: #E3F2FD;
+  color: #1976D2;
+  border: 1px solid #BBDEFB;
+}
+
+.status-badge--rejected {
+  background-color: #FFEBEE;
+  color: #D32F2F;
+  border: 1px solid #FFCDD2;
+}
+
+.status-badge--selected {
+  background-color: #E8F5E9;
+  color: #2E7D32;
+  border: 1px solid #C8E6C9;
+}
+
+/* Toast Notifications */
+.toast {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 4px solid var(--primary-color);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.toast--visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast__icon {
+  font-size: 1.2rem;
+  color: var(--primary-color);
+}
+
+.toast__message {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.toast--success {
+  border-left-color: #2E7D32;
+}
+
+.toast--success .toast__icon {
+  color: #2E7D32;
+}
+
+.toast--error {
+  border-left-color: #D32F2F;
+}
+
+.toast--error .toast__icon {
+  color: #D32F2F;
+}
+
+.toast--info {
+  border-left-color: #1976D2;
+}
+
+.toast--info .toast__icon {
+  color: #1976D2;
+}
+
+/* status-update classes for Digest Page */
+.status-updates-section {
+  max-width: 700px;
+  margin: var(--space-xl) auto;
+  padding: 0 var(--space-lg);
+}
+
+.section-title {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
+  font-weight: 600;
+}
+
+.status-updates-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.status-update-card {
+  background: white;
+  padding: var(--space-md);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.status-update__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+}
+
+.status-update__title {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin: 0;
+  font-weight: 600;
+}
+
+.status-update__time {
+  font-size: 0.8rem;
+  color: var(--text-tertiary);
+}
+
+.status-update__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-update__company {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Filter Bar Status Select */
+.filter-control select[name="status"] {
+  min-width: 130px;
 }

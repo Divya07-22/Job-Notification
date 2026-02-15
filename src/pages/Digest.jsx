@@ -9,6 +9,7 @@ import {
     formatDigestForCopy,
     createEmailDraft
 } from '../utils/digestEngine';
+import { getStatusHistory, formatTimestamp, getStatusBadgeClass } from '../utils/statusManager';
 
 export default function Digest() {
     const [digest, setDigest] = useState(null);
@@ -182,9 +183,9 @@ export default function Digest() {
                                 </div>
                                 <div className="digest-job__footer">
                                     <span className={`match-badge ${job.matchScore >= 80 ? 'match-badge--high' :
-                                            job.matchScore >= 60 ? 'match-badge--medium' :
-                                                job.matchScore >= 40 ? 'match-badge--low' :
-                                                    'match-badge--verylow'
+                                        job.matchScore >= 60 ? 'match-badge--medium' :
+                                            job.matchScore >= 40 ? 'match-badge--low' :
+                                                'match-badge--verylow'
                                         }`}>
                                         {job.matchScore}% Match
                                     </span>
@@ -227,6 +228,51 @@ export default function Digest() {
                 <p className="digest-note">
                     Demo Mode: Daily 9AM trigger simulated manually.
                 </p>
+            </div>
+
+            {/* Recent Status Updates */}
+            <RecentStatusUpdates />
+        </div>
+    );
+}
+
+function RecentStatusUpdates() {
+    const [history, setHistory] = useState([]);
+
+    useEffect(() => {
+        // Load history on mount
+        const loadHistory = () => {
+            const updates = getStatusHistory(5);
+            setHistory(updates);
+        };
+
+        loadHistory();
+
+        // Listen for storage events (in case status changes in another tab/component)
+        window.addEventListener('storage', loadHistory);
+        return () => window.removeEventListener('storage', loadHistory);
+    }, []);
+
+    if (history.length === 0) return null;
+
+    return (
+        <div className="status-updates-section">
+            <h2 className="section-title">Recent Status Updates</h2>
+            <div className="status-updates-list">
+                {history.map((update, index) => (
+                    <div key={index} className="status-update-card">
+                        <div className="status-update__header">
+                            <h3 className="status-update__title">{update.jobTitle}</h3>
+                            <span className="status-update__time">{formatTimestamp(update.timestamp)}</span>
+                        </div>
+                        <div className="status-update__meta">
+                            <span className="status-update__company">{update.company}</span>
+                            <span className={`status-badge ${getStatusBadgeClass(update.status)}`}>
+                                {update.status}
+                            </span>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );

@@ -11,6 +11,7 @@ export default function FilterBar({ filters, onFilterChange, jobCount, showMatch
             mode: 'all',
             experience: 'all',
             source: 'all',
+            status: 'all',
             sort: 'latest'
         });
     };
@@ -94,6 +95,21 @@ export default function FilterBar({ filters, onFilterChange, jobCount, showMatch
                         <option value="LinkedIn">LinkedIn</option>
                         <option value="Naukri">Naukri</option>
                         <option value="Indeed">Indeed</option>
+                    </select>
+                </div>
+
+                <div className="filter-control">
+                    <select
+                        name="status"
+                        className="input"
+                        value={filters.status || 'all'}
+                        onChange={handleChange}
+                    >
+                        <option value="all">All Statuses</option>
+                        <option value="Not Applied">Not Applied</option>
+                        <option value="Applied">Applied</option>
+                        <option value="Rejected">Rejected</option>
+                        <option value="Selected">Selected</option>
                     </select>
                 </div>
 

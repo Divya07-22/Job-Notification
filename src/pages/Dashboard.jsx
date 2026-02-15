@@ -6,6 +6,8 @@ import JobModal from '../components/JobModal';
 import FilterBar from '../components/FilterBar';
 import { calculateMatchScore, extractMaxSalary } from '../utils/matchScore';
 
+import { getJobStatus } from '../utils/statusManager';
+
 export default function Dashboard() {
     const [filters, setFilters] = useState({
         keyword: '',
@@ -13,6 +15,7 @@ export default function Dashboard() {
         mode: 'all',
         experience: 'all',
         source: 'all',
+        status: 'all',
         sort: 'latest'
     });
 
@@ -20,6 +23,7 @@ export default function Dashboard() {
     const [savedJobIds, setSavedJobIds] = useState([]);
     const [preferences, setPreferences] = useState(null);
     const [showOnlyMatches, setShowOnlyMatches] = useState(false);
+    const [statusUpdateTrigger, setStatusUpdateTrigger] = useState(0);
 
     // Load saved jobs from localStorage
     useEffect(() => {
@@ -79,6 +83,14 @@ export default function Dashboard() {
                 return false;
             }
 
+            // Status filter
+            if (filters.status !== 'all') {
+                const jobStatus = getJobStatus(job.id);
+                if (jobStatus !== filters.status) {
+                    return false;
+                }
+            }
+
             // Match threshold filter
             if (showOnlyMatches && preferences && job.matchScore < preferences.minMatchScore) {
                 return false;
@@ -106,7 +118,7 @@ export default function Dashboard() {
         });
 
         return jobs;
-    }, [jobsData, filters, preferences, showOnlyMatches]);
+    }, [jobsData, filters, preferences, showOnlyMatches, statusUpdateTrigger]);
 
     const handleSaveJob = (jobId) => {
         let newSavedJobs;
@@ -167,6 +179,7 @@ export default function Dashboard() {
                         isSaved={savedJobIds.includes(job.id)}
                         matchScore={job.matchScore}
                         showScore={!!preferences}
+                        onStatusChange={() => setStatusUpdateTrigger(prev => prev + 1)}
                     />
                 ))}
             </div>
