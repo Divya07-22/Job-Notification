@@ -1,4 +1,6 @@
-export default function JobCard({ job, onView, onSave, isSaved }) {
+import { getMatchBadgeClass } from '../utils/matchScore';
+
+export default function JobCard({ job, onView, onSave, isSaved, matchScore, showScore }) {
     const formatDaysAgo = (days) => {
         if (days === 0) return "Today";
         if (days === 1) return "Yesterday";
@@ -11,6 +13,13 @@ export default function JobCard({ job, onView, onSave, isSaved }) {
 
     return (
         <div className="job-card">
+            {/* Match Score Badge */}
+            {showScore && matchScore !== undefined && (
+                <div className={`match-badge ${getMatchBadgeClass(matchScore)}`}>
+                    {matchScore}% Match
+                </div>
+            )}
+
             <div className="job-card__header">
                 <h3 className="job-card__title">{job.title}</h3>
                 <p className="job-card__company">{job.company}</p>

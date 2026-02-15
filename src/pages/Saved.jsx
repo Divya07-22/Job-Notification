@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import jobsData from '../data/jobsData';
 import JobCard from '../components/JobCard';
 import JobModal from '../components/JobModal';
+import { calculateMatchScore } from '../utils/matchScore';
 
 export default function Saved() {
     const [savedJobIds, setSavedJobIds] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
+    const [preferences, setPreferences] = useState(null);
 
     // Load saved jobs from localStorage
     useEffect(() => {
@@ -15,8 +17,25 @@ export default function Saved() {
         }
     }, []);
 
-    // Get saved job objects
-    const savedJobs = jobsData.filter(job => savedJobIds.includes(job.id));
+    // Load preferences from localStorage
+    useEffect(() => {
+        const savedPrefs = localStorage.getItem('jobTrackerPreferences');
+        if (savedPrefs) {
+            try {
+                setPreferences(JSON.parse(savedPrefs));
+            } catch (e) {
+                console.error('Failed to load preferences:', e);
+            }
+        }
+    }, []);
+
+    // Get saved job objects with match scores
+    const savedJobs = jobsData
+        .filter(job => savedJobIds.includes(job.id))
+        .map(job => ({
+            ...job,
+            matchScore: calculateMatchScore(job, preferences)
+        }));
 
     const handleUnsaveJob = (jobId) => {
         const newSavedJobs = savedJobIds.filter(id => id !== jobId);
@@ -56,6 +75,8 @@ export default function Saved() {
                         onView={() => setSelectedJob(job)}
                         onSave={() => handleUnsaveJob(job.id)}
                         isSaved={true}
+                        matchScore={job.matchScore}
+                        showScore={!!preferences}
                     />
                 ))}
             </div>

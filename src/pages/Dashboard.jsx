@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import jobsData from '../data/jobsData';
 import JobCard from '../components/JobCard';
 import JobModal from '../components/JobModal';
 import FilterBar from '../components/FilterBar';
+import { calculateMatchScore, extractMaxSalary } from '../utils/matchScore';
 
 export default function Dashboard() {
     const [filters, setFilters] = useState({
@@ -16,6 +18,8 @@ export default function Dashboard() {
 
     const [selectedJob, setSelectedJob] = useState(null);
     const [savedJobIds, setSavedJobIds] = useState([]);
+    const [preferences, setPreferences] = useState(null);
+    const [showOnlyMatches, setShowOnlyMatches] = useState(false);
 
     // Load saved jobs from localStorage
     useEffect(() => {
@@ -25,9 +29,28 @@ export default function Dashboard() {
         }
     }, []);
 
-    // Filter and sort jobs
-    const filteredJobs = jobsData
-        .filter(job => {
+    // Load preferences from localStorage
+    useEffect(() => {
+        const savedPrefs = localStorage.getItem('jobTrackerPreferences');
+        if (savedPrefs) {
+            try {
+                setPreferences(JSON.parse(savedPrefs));
+            } catch (e) {
+                console.error('Failed to load preferences:', e);
+            }
+        }
+    }, []);
+
+    // Calculate match scores and filter jobs
+    const filteredJobs = useMemo(() => {
+        // Add match scores to all jobs
+        let jobs = jobsData.map(job => ({
+            ...job,
+            matchScore: calculateMatchScore(job, preferences)
+        }));
+
+        // Apply filters
+        jobs = jobs.filter(job => {
             // Keyword search
             if (filters.keyword) {
                 const keyword = filters.keyword.toLowerCase();
@@ -56,15 +79,34 @@ export default function Dashboard() {
                 return false;
             }
 
+            // Match threshold filter
+            if (showOnlyMatches && preferences && job.matchScore < preferences.minMatchScore) {
+                return false;
+            }
+
             return true;
-        })
-        .sort((a, b) => {
-            if (filters.sort === 'latest') {
-                return a.postedDaysAgo - b.postedDaysAgo;
-            } else {
-                return b.postedDaysAgo - a.postedDaysAgo;
+        });
+
+        // Sort jobs
+        jobs.sort((a, b) => {
+            switch (filters.sort) {
+                case 'latest':
+                    return a.postedDaysAgo - b.postedDaysAgo;
+                case 'oldest':
+                    return b.postedDaysAgo - a.postedDaysAgo;
+                case 'matchScore':
+                    return (b.matchScore || 0) - (a.matchScore || 0);
+                case 'salaryHigh':
+                    return extractMaxSalary(b) - extractMaxSalary(a);
+                case 'salaryLow':
+                    return extractMaxSalary(a) - extractMaxSalary(b);
+                default:
+                    return 0;
             }
         });
+
+        return jobs;
+    }, [jobsData, filters, preferences, showOnlyMatches]);
 
     const handleSaveJob = (jobId) => {
         let newSavedJobs;
@@ -86,10 +128,33 @@ export default function Dashboard() {
                 Browse and apply to the latest tech jobs in India.
             </p>
 
+            {/* Banner if preferences not set */}
+            {!preferences && (
+                <div className="banner banner--info">
+                    <strong>Set your preferences to activate intelligent matching.</strong>
+                    <Link to="/settings" className="banner__link">Go to Settings →</Link>
+                </div>
+            )}
+
+            {/* Show Only Matches Toggle */}
+            {preferences && (
+                <div className="toggle-container">
+                    <label className="toggle-control">
+                        <input
+                            type="checkbox"
+                            checked={showOnlyMatches}
+                            onChange={(e) => setShowOnlyMatches(e.target.checked)}
+                        />
+                        <span>Show only jobs above my threshold ({preferences.minMatchScore}%)</span>
+                    </label>
+                </div>
+            )}
+
             <FilterBar
                 filters={filters}
                 onFilterChange={setFilters}
                 jobCount={filteredJobs.length}
+                showMatchScore={!!preferences}
             />
 
             <div className="job-grid">
@@ -100,17 +165,35 @@ export default function Dashboard() {
                         onView={() => setSelectedJob(job)}
                         onSave={() => handleSaveJob(job.id)}
                         isSaved={savedJobIds.includes(job.id)}
+                        matchScore={job.matchScore}
+                        showScore={!!preferences}
                     />
                 ))}
             </div>
 
-            {filteredJobs.length === 0 && (
+            {/* Empty state - no results */}
+            {filteredJobs.length === 0 && !showOnlyMatches && (
                 <div className="empty-state">
                     <div className="empty-state__content">
                         <h2 className="empty-state__title">No jobs found</h2>
                         <p className="empty-state__message">
                             Try adjusting your filters to see more results.
                         </p>
+                    </div>
+                </div>
+            )}
+
+            {/* Empty state - no matches above threshold */}
+            {filteredJobs.length === 0 && showOnlyMatches && (
+                <div className="empty-state">
+                    <div className="empty-state__content">
+                        <h2 className="empty-state__title">No roles match your criteria</h2>
+                        <p className="empty-state__message">
+                            Adjust filters or lower your threshold in settings to see more jobs.
+                        </p>
+                        <Link to="/settings" className="btn btn--secondary">
+                            Adjust Preferences
+                        </Link>
                     </div>
                 </div>
             )}

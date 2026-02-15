@@ -1,4 +1,4 @@
-export default function FilterBar({ filters, onFilterChange, jobCount }) {
+export default function FilterBar({ filters, onFilterChange, jobCount, showMatchScore }) {
     const handleChange = (e) => {
         const { name, value } = e.target;
         onFilterChange({ ...filters, [name]: value });
@@ -106,6 +106,9 @@ export default function FilterBar({ filters, onFilterChange, jobCount }) {
                     >
                         <option value="latest">Latest First</option>
                         <option value="oldest">Oldest First</option>
+                        {showMatchScore && <option value="matchScore">Match Score</option>}
+                        <option value="salaryHigh">Salary: High to Low</option>
+                        <option value="salaryLow">Salary: Low to High</option>
                     </select>
                 </div>
             </div>
