@@ -73,6 +73,7 @@ export default function Settings() {
         setTimeout(() => setSaved(false), 3000);
     };
 
+
     const locations = ['Bangalore', 'Hyderabad', 'Pune', 'Chennai', 'Mumbai', 'Noida', 'Remote'];
     const modes = ['Remote', 'Hybrid', 'Onsite'];
 
