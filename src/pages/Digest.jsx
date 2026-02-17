@@ -75,17 +75,25 @@ export default function Digest() {
     const createEmailDraft = () => {
         if (!digest) return;
 
-        // Limit to top 5 to avoid mailto length limits (browser restrictions)
-        const top5 = digest.slice(0, 5);
-
-        const lines = top5.map((job, i) =>
-            `${i + 1}. ${job.title} at ${job.company} (${job.matchScore}% Match)%0D%0A${job.applyUrl}`
+        // 1. Generate the full email body (all jobs)
+        const lines = digest.map((job, i) =>
+            `${i + 1}. ${job.title} at ${job.company} (${job.matchScore}% Match)\n${job.applyUrl}`
         );
 
-        const body = `Here are your top 5 matches for ${new Date().toLocaleDateString()}:%0D%0A%0D%0A${lines.join('%0D%0A%0D%0A')}%0D%0A%0D%0A(View all 10 matches on the Dashboard)`;
+        const body = `Here are your top jobs for ${new Date().toLocaleDateString()}:\n\n${lines.join('\n\n')}`;
 
-        // Use location.href instead of window.open for better mailto support
-        window.location.href = `mailto:?subject=My 9AM Job Digest - Top 5&body=${body}`;
+        // 2. Copy to clipboard
+        navigator.clipboard.writeText(body).then(() => {
+            // 3. Open mail client with SUBJECT ONLY (to avoid URL length limits)
+            const subject = encodeURIComponent(`My 9AM Job Digest (${new Date().toLocaleDateString()})`);
+            window.location.href = `mailto:?subject=${subject}`;
+
+            // 4. Notify user
+            alert("Email body copied to clipboard! \n\n1. Your mail app should open now.\n2. Paste (Ctrl+V) the text into the body.");
+        }).catch(err => {
+            console.error('Failed to copy digest:', err);
+            alert('Failed to copy digest. Please allow clipboard access.');
+        });
     };
 
     if (!preferences) {
