@@ -90,8 +90,11 @@ export default function Dashboard() {
             // Keyword
             if (filters.keyword) {
                 const lowerKeyword = filters.keyword.toLowerCase();
-                if (!job.title.toLowerCase().includes(lowerKeyword) &&
-                    !job.company.toLowerCase().includes(lowerKeyword)) {
+                const inTitle = job.title.toLowerCase().includes(lowerKeyword);
+                const inCompany = job.company.toLowerCase().includes(lowerKeyword);
+                const inSkills = job.skills.some(skill => skill.toLowerCase().includes(lowerKeyword));
+
+                if (!inTitle && !inCompany && !inSkills) {
                     return false;
                 }
             }
