@@ -75,12 +75,17 @@ export default function Digest() {
     const createEmailDraft = () => {
         if (!digest) return;
 
-        const lines = digest.map((job, i) =>
+        // Limit to top 5 to avoid mailto length limits (browser restrictions)
+        const top5 = digest.slice(0, 5);
+
+        const lines = top5.map((job, i) =>
             `${i + 1}. ${job.title} at ${job.company} (${job.matchScore}% Match)%0D%0A${job.applyUrl}`
         );
 
-        const body = `Here are your top jobs for ${new Date().toLocaleDateString()}:%0D%0A%0D%0A${lines.join('%0D%0A%0D%0A')}`;
-        window.open(`mailto:?subject=My 9AM Job Digest&body=${body}`, '_blank');
+        const body = `Here are your top 5 matches for ${new Date().toLocaleDateString()}:%0D%0A%0D%0A${lines.join('%0D%0A%0D%0A')}%0D%0A%0D%0A(View all 10 matches on the Dashboard)`;
+
+        // Use location.href instead of window.open for better mailto support
+        window.location.href = `mailto:?subject=My 9AM Job Digest - Top 5&body=${body}`;
     };
 
     if (!preferences) {
