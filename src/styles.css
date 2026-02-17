@@ -2572,3 +2572,214 @@ select.input {
   font-size: 0.9rem;
 }
 
+
+/* ============================================
+   TEST CHECKLIST & SHIP PAGE STYLES
+   ============================================ */
+
+/* Summary Card */
+.summary-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.summary-card--success {
+  border-color: var(--color-success);
+  background-color: #F8FFF8;
+}
+
+.summary-card--warning {
+  border-color: var(--color-warning);
+  background-color: #FFFDF8;
+}
+
+.summary-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.summary-card__title {
+  font-family: var(--font-serif);
+  font-size: var(--font-size-h3);
+  margin: 0;
+  color: var(--color-text-primary);
+}
+
+.summary-badge {
+  font-family: var(--font-sans);
+  font-size: var(--font-size-small);
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.summary-badge--success {
+  background-color: var(--color-success);
+  color: white;
+}
+
+.summary-badge--warning {
+  background-color: var(--color-warning);
+  color: white;
+}
+
+.summary-message {
+  margin-top: var(--space-sm);
+  font-size: var(--font-size-small);
+  color: #666;
+  margin-bottom: 0;
+}
+
+/* Progress Bar */
+.progress-bar {
+  height: 8px;
+  background-color: #E0E0E0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: var(--space-xs);
+}
+
+.progress-bar__fill {
+  height: 100%;
+  background-color: var(--color-accent);
+  transition: width 0.3s ease;
+}
+
+/* Checklist */
+.checklist-container {
+  display: grid;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
+}
+
+.checklist-item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: border-color 0.2s ease;
+}
+
+.checklist-item:hover {
+  border-color: #999;
+}
+
+.checklist-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  cursor: pointer;
+  flex: 1;
+}
+
+.checklist-checkbox {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.checklist-text {
+  font-family: var(--font-sans);
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.checklist-tooltip {
+  position: relative;
+  cursor: help;
+  margin-left: var(--space-sm);
+}
+
+.tooltip-icon {
+  font-size: 1.2rem;
+  opacity: 0.6;
+}
+
+.tooltip-text {
+  visibility: hidden;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 4px;
+  padding: 8px 12px;
+  position: absolute;
+  z-index: 10;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-100%); /* Shift left to avoid overflow */
+  opacity: 0;
+  transition: opacity 0.2s;
+  width: 250px;
+  font-size: 0.85rem;
+  line-height: 1.4;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.checklist-tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
+.checklist-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-md);
+  align-items: center;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-md);
+}
+
+.btn--disabled {
+  background-color: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Ship Page */
+.ship-card {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  background-color: white;
+  padding: var(--space-xl);
+  border-radius: var(--border-radius);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+}
+
+.ship-card h2 {
+  font-family: var(--font-serif);
+  color: var(--color-accent);
+  margin-bottom: var(--space-md);
+}
+
+.text-success {
+  color: var(--color-success);
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: var(--space-xs);
+}
+
+.ship-actions {
+  margin-top: var(--space-lg);
+  display: flex;
+  justify-content: center;
+  gap: var(--space-md);
+}
+
