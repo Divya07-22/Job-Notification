@@ -22,12 +22,14 @@ export default function TestChecklist() {
     const handleToggle = (id) => {
         const newValue = !status[id];
         setTestItem(id, newValue);
-        // Local state update for immediate feedback (though storage event handles it too)
-        setStatus(prev => ({ ...prev, [id]: newValue }));
-        setProgress(prev => {
-            const newPassed = newValue ? prev.passed + 1 : prev.passed - 1;
-            return { ...prev, passed: newPassed };
-        });
+
+        // Update local status map immediately
+        const newStatus = { ...status, [id]: newValue };
+        setStatus(newStatus);
+
+        // Recalculate match count based on truth
+        const newPassed = TEST_ITEMS.filter(item => newStatus[item.id] === true).length;
+        setProgress({ passed: newPassed, total: TEST_ITEMS.length });
     };
 
     const handleReset = () => {
