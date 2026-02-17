@@ -173,16 +173,21 @@ Core Features:
 
             {/* Final Action */}
             <div style={{ marginTop: '32px', textAlign: 'center' }}>
-                {!testsPassed && (
-                    <p style={{ color: 'var(--color-warning)', marginBottom: '16px' }}>
-                        ⚠️ You must complete the <a href="/jt/07-test">Test Checklist</a> before shipping.
-                    </p>
-                )}
-                {!allLinksValid && (
-                    <p style={{ color: '#999', marginBottom: '16px' }}>
-                        Enter all valid artifact links to enable submission.
-                    </p>
-                )}
+                <div style={{ marginBottom: '16px', textAlign: 'left', maxWidth: '400px', margin: '0 auto 16px auto' }}>
+                    <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Requirements to Ship:</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: testsPassed ? 'green' : 'red' }}>
+                        <span>{testsPassed ? '✅' : '❌'}</span> All 10 Tests Passed
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: isValidUrl(artifacts.lovableLink) ? 'green' : 'red' }}>
+                        <span>{isValidUrl(artifacts.lovableLink) ? '✅' : '❌'}</span> Valid Lovable Link (starts with http/https)
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: isValidUrl(artifacts.githubLink) ? 'green' : 'red' }}>
+                        <span>{isValidUrl(artifacts.githubLink) ? '✅' : '❌'}</span> Valid GitHub Link (starts with http/https)
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: isValidUrl(artifacts.deployedLink) ? 'green' : 'red' }}>
+                        <span>{isValidUrl(artifacts.deployedLink) ? '✅' : '❌'}</span> Valid Deployed Link (starts with http/https)
+                    </div>
+                </div>
 
                 <Button
                     variant="primary"
