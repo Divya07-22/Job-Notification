@@ -176,7 +176,13 @@ Core Features:
                 <div style={{ marginBottom: '16px', textAlign: 'left', maxWidth: '400px', margin: '0 auto 16px auto' }}>
                     <p style={{ fontWeight: 'bold', marginBottom: '8px' }}>Requirements to Ship:</p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: testsPassed ? 'green' : 'red' }}>
-                        <span>{testsPassed ? '✅' : '❌'}</span> All 10 Tests Passed
+                        <span>{testsPassed ? '✅' : '❌'}</span>
+                        All 10 Tests Passed
+                        {!testsPassed && (
+                            <a href="/jt/07-test" style={{ marginLeft: '10px', textDecoration: 'underline', fontWeight: 'bold' }}>
+                                (Go to Checklist)
+                            </a>
+                        )}
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: isValidUrl(artifacts.lovableLink) ? 'green' : 'red' }}>
                         <span>{isValidUrl(artifacts.lovableLink) ? '✅' : '❌'}</span> Valid Lovable Link (starts with http/https)
