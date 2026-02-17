@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { isReadyToShip } from '../utils/testManager';
+import { isReadyToShip, getTestProgress } from '../utils/testManager';
 
 export default function Ship() {
     const [isReady, setIsReady] = useState(false);
+    const [progress, setProgress] = useState({ passed: 0, total: 10 });
 
     useEffect(() => {
         setIsReady(isReadyToShip());
+        setProgress(getTestProgress());
     }, []);
 
     if (!isReady) {
@@ -17,10 +19,12 @@ export default function Ship() {
                     <div className="empty-state__content">
                         <h2 className="empty-state__title">Shipment Locked</h2>
                         <p className="empty-state__message">
-                            You must complete the system verification checklist before accessing the shipping controls.
+                            You have completed {progress.passed} out of {progress.total} system verification tests.
+                            <br />
+                            Complete all 10 items to unlock shipping.
                         </p>
                         <Link to="/jt/07-test" className="btn btn--primary">
-                            Go to Verification Checklist
+                            Go to Verification Checklist ({progress.passed}/{progress.total})
                         </Link>
                     </div>
                 </div>
