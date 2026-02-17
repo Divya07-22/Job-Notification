@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import jobsData from '../data/jobsData';
 import { calculateMatchScore } from '../utils/matchScore';
+import { getStatusHistory, getStatusColor } from '../utils/statusManager';
 import Button from '../components/ui/Button';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
@@ -9,8 +10,8 @@ export default function Digest() {
     const [digest, setDigest] = useState(null);
     const [preferences, setPreferences] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [statusHistory, setStatusHistory] = useState([]);
 
-    // Get today's date string YYYY-MM-DD
     const getTodayDate = () => {
         const today = new Date();
         return today.toISOString().split('T')[0];
@@ -20,17 +21,18 @@ export default function Digest() {
     const storageKey = `jobTrackerDigest_${todayDate}`;
 
     useEffect(() => {
-        // Load preferences
         const savedPrefs = localStorage.getItem('jobTrackerPreferences');
         if (savedPrefs) {
             setPreferences(JSON.parse(savedPrefs));
         }
 
-        // Load existing digest for today
         const savedDigest = localStorage.getItem(storageKey);
         if (savedDigest) {
             setDigest(JSON.parse(savedDigest));
         }
+
+        // Load Status History
+        setStatusHistory(getStatusHistory());
     }, [storageKey]);
 
     const generateDigest = () => {
@@ -38,30 +40,24 @@ export default function Digest() {
 
         setLoading(true);
         setTimeout(() => {
-            // 1. Score all jobs
             const scoredJobs = jobsData.map(job => ({
                 ...job,
                 matchScore: calculateMatchScore(job, preferences)
             }));
 
-            // 2. Filter matches (optional: strict matches only? user didn't specify strictness for digest, but "Top 10 matched" implies high scores)
-            // Let's filter at least > 0 score to avoid completely irrelevant ones
             const relevantJobs = scoredJobs.filter(job => job.matchScore > 0);
 
-            // 3. Sort: Match Score Desc, then Posted Days Asc
             relevantJobs.sort((a, b) => {
                 if (b.matchScore !== a.matchScore) return b.matchScore - a.matchScore;
                 return a.postedDaysAgo - b.postedDaysAgo;
             });
 
-            // 4. Take Top 10
             const top10 = relevantJobs.slice(0, 10);
 
-            // 5. Store
             setDigest(top10);
             localStorage.setItem(storageKey, JSON.stringify(top10));
             setLoading(false);
-        }, 800); // Fake delay for "generating" feel
+        }, 800);
     };
 
     const copyToClipboard = () => {
@@ -107,6 +103,43 @@ export default function Digest() {
                 Your curated list of precision-matched roles.
             </p>
 
+            {/* Status Updates Section */}
+            {statusHistory.length > 0 && (
+                <div style={{ marginBottom: '40px' }}>
+                    <h3 style={{ fontFamily: 'var(--font-serif)', marginBottom: '16px' }}>Recent Status Updates</h3>
+                    <div style={{ display: 'grid', gap: '12px' }}>
+                        {statusHistory.slice(0, 5).map((update, idx) => (
+                            <div key={idx} style={{
+                                backgroundColor: 'white',
+                                padding: '16px',
+                                borderRadius: '8px',
+                                border: '1px solid #eee',
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}>
+                                <div>
+                                    <div style={{ fontWeight: 600 }}>{update.jobTitle}</div>
+                                    <div className="text-muted" style={{ fontSize: '0.85rem' }}>{update.jobCompany}</div>
+                                </div>
+                                <div style={{ textAlign: 'right' }}>
+                                    <span style={{
+                                        color: getStatusColor(update.status),
+                                        fontWeight: 'bold',
+                                        fontSize: '0.85rem'
+                                    }}>
+                                        {update.status}
+                                    </span>
+                                    <div className="text-muted" style={{ fontSize: '0.75rem' }}>
+                                        {new Date(update.date).toLocaleDateString()}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
             {!digest ? (
                 <div className="digest-starter" style={{ textAlign: 'center', marginTop: '40px' }}>
                     <Card>
@@ -132,6 +165,7 @@ export default function Digest() {
                         <Button variant="secondary" size="small" onClick={createEmailDraft}>Create Email Draft</Button>
                     </div>
 
+                    {/* Email Container (Same as before) */}
                     {digest.length === 0 ? (
                         <div className="empty-state">
                             <h3 className="empty-state__title">No matching roles today.</h3>
@@ -151,6 +185,7 @@ export default function Digest() {
                                 borderRadius: '8px',
                                 boxShadow: '0 2px 10px rgba(0,0,0,0.05)'
                             }}>
+                                {/* Email Header */}
                                 <div className="email-header" style={{ borderBottom: '1px solid #eee', paddingBottom: '20px', marginBottom: '30px' }}>
                                     <h1 style={{ fontFamily: 'var(--font-serif)', fontSize: '24px', margin: '0 0 8px 0', color: '#333' }}>
                                         Top 10 Jobs For You — 9AM Digest
@@ -158,6 +193,7 @@ export default function Digest() {
                                     <p style={{ margin: 0, color: '#666' }}>{new Date().toLocaleDateString()}</p>
                                 </div>
 
+                                {/* Email Body */}
                                 <div className="email-body">
                                     {digest.map((job, index) => (
                                         <div key={job.id} className="digest-item" style={{ marginBottom: '25px', paddingBottom: '25px', borderBottom: '1px solid #f0f0f0' }}>

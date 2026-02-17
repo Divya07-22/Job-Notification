@@ -4,6 +4,7 @@ import JobCard from '../components/JobCard';
 import JobModal from '../components/JobModal';
 import FilterBar from '../components/FilterBar';
 import { calculateMatchScore, extractMaxSalary } from '../utils/matchScore';
+import { getJobStatus, updateJobStatus } from '../utils/statusManager';
 
 export default function Dashboard() {
     const [filters, setFilters] = useState({
@@ -12,6 +13,7 @@ export default function Dashboard() {
         mode: 'all',
         experience: 'all',
         source: 'all',
+        status: 'all', // New filter
         sort: 'latest'
     });
 
@@ -20,16 +22,17 @@ export default function Dashboard() {
     const [preferences, setPreferences] = useState(null);
     const [showOnlyMatches, setShowOnlyMatches] = useState(false);
 
-    // Load saved jobs from localStorage
+    // Status State Map: { [jobId]: 'Applied' }
+    const [statusMap, setStatusMap] = useState({});
+
+    // Toast State
+    const [toast, setToast] = useState(null);
+
+    // Load saved jobs & preferences & status
     useEffect(() => {
         const saved = localStorage.getItem('savedJobs');
-        if (saved) {
-            setSavedJobIds(JSON.parse(saved));
-        }
-    }, []);
+        if (saved) setSavedJobIds(JSON.parse(saved));
 
-    // Load preferences from localStorage
-    useEffect(() => {
         const savedPrefs = localStorage.getItem('jobTrackerPreferences');
         if (savedPrefs) {
             try {
@@ -38,19 +41,36 @@ export default function Dashboard() {
                 console.error('Failed to load preferences:', e);
             }
         }
+
+        // Load all statuses
+        const loadedStatusMap = {};
+        jobsData.forEach(job => {
+            loadedStatusMap[job.id] = getJobStatus(job.id);
+        });
+        setStatusMap(loadedStatusMap);
     }, []);
 
     const handleSaveJob = (jobId) => {
         let newSavedJobs;
         if (savedJobIds.includes(jobId)) {
-            // Unsave
             newSavedJobs = savedJobIds.filter(id => id !== jobId);
         } else {
-            // Save
             newSavedJobs = [...savedJobIds, jobId];
         }
         setSavedJobIds(newSavedJobs);
         localStorage.setItem('savedJobs', JSON.stringify(newSavedJobs));
+    };
+
+    const handleStatusChange = (jobId, newStatus, title, company) => {
+        // Update local state
+        setStatusMap(prev => ({ ...prev, [jobId]: newStatus }));
+
+        // Persist
+        updateJobStatus(jobId, newStatus, title, company);
+
+        // Show Toast
+        setToast(`Status updated: ${newStatus}`);
+        setTimeout(() => setToast(null), 3000);
     };
 
     // Calculate match scores and filter jobs
@@ -58,7 +78,11 @@ export default function Dashboard() {
         // Add match scores to all jobs if preferences exist
         let processedJobs = jobsData.map(job => {
             const score = preferences ? calculateMatchScore(job, preferences) : 0;
-            return { ...job, matchScore: score };
+            return {
+                ...job,
+                matchScore: score,
+                status: statusMap[job.id] || 'Not Applied'
+            };
         });
 
         // Apply filters
@@ -79,6 +103,8 @@ export default function Dashboard() {
             if (filters.experience !== 'all' && job.experience !== filters.experience) return false;
             // Source
             if (filters.source !== 'all' && job.source !== filters.source) return false;
+            // Status Filter
+            if (filters.status !== 'all' && job.status !== filters.status) return false;
 
             // Match Threshold Toggle
             if (showOnlyMatches && preferences) {
@@ -87,14 +113,14 @@ export default function Dashboard() {
 
             return true;
         }).sort((a, b) => {
-            if (filters.sort === 'latest') return a.postedDaysAgo - b.postedDaysAgo; // Ascending days ago = latest first? No wait. 0 days ago is latest. So ascending is correct.
+            if (filters.sort === 'latest') return a.postedDaysAgo - b.postedDaysAgo;
             if (filters.sort === 'oldest') return b.postedDaysAgo - a.postedDaysAgo;
-            if (filters.sort === 'matchScore') return b.matchScore - a.matchScore; // High to low
+            if (filters.sort === 'matchScore') return b.matchScore - a.matchScore;
             if (filters.sort === 'salaryHigh') return extractMaxSalary(b) - extractMaxSalary(a);
             if (filters.sort === 'salaryLow') return extractMaxSalary(a) - extractMaxSalary(b);
             return 0;
         });
-    }, [jobsData, filters, preferences, showOnlyMatches]);
+    }, [jobsData, filters, preferences, showOnlyMatches, statusMap]);
 
     return (
         <div className="page-content">
@@ -103,7 +129,24 @@ export default function Dashboard() {
                 Browse and apply to the latest tech jobs in India.
             </p>
 
-            {/* Preference Warning Banner */}
+            {/* Notification Toast */}
+            {toast && (
+                <div style={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    right: '20px',
+                    backgroundColor: '#333',
+                    color: 'white',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                    zIndex: 2000,
+                    animation: 'fadeIn 0.3s ease'
+                }}>
+                    {toast}
+                </div>
+            )}
+
             {!preferences && (
                 <div style={{
                     backgroundColor: '#e3f2fd',
@@ -121,7 +164,6 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {/* Toggle for Match Score */}
             {preferences && (
                 <div style={{ marginBottom: '16px', display: 'flex', alignItems: 'center' }}>
                     <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', fontFamily: 'var(--font-sans)', fontWeight: 500 }}>
@@ -154,6 +196,8 @@ export default function Dashboard() {
                             isSaved={savedJobIds.includes(job.id)}
                             matchScore={job.matchScore}
                             showScore={!!preferences}
+                            currentStatus={job.status}
+                            onStatusChange={handleStatusChange}
                         />
                     ))
                 ) : (

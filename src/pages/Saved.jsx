@@ -4,23 +4,36 @@ import JobCard from '../components/JobCard';
 import JobModal from '../components/JobModal';
 import Button from '../components/ui/Button';
 import { Link } from 'react-router-dom';
+import { getJobStatus, updateJobStatus } from '../utils/statusManager';
 
 export default function Saved() {
     const [savedJobIds, setSavedJobIds] = useState([]);
     const [selectedJob, setSelectedJob] = useState(null);
+    const [statusMap, setStatusMap] = useState({});
 
     useEffect(() => {
         const saved = localStorage.getItem('savedJobs');
         if (saved) {
             setSavedJobIds(JSON.parse(saved));
         }
+
+        // Load all statuses
+        const loadedStatusMap = {};
+        jobsData.forEach(job => {
+            loadedStatusMap[job.id] = getJobStatus(job.id);
+        });
+        setStatusMap(loadedStatusMap);
     }, []);
 
     const handleSaveJob = (jobId) => {
-        // Only allow removing from this page
         const newSavedJobs = savedJobIds.filter(id => id !== jobId);
         setSavedJobIds(newSavedJobs);
         localStorage.setItem('savedJobs', JSON.stringify(newSavedJobs));
+    };
+
+    const handleStatusChange = (jobId, newStatus, title, company) => {
+        setStatusMap(prev => ({ ...prev, [jobId]: newStatus }));
+        updateJobStatus(jobId, newStatus, title, company);
     };
 
     const savedJobs = jobsData.filter(job => savedJobIds.includes(job.id));
@@ -39,6 +52,10 @@ export default function Saved() {
                             onView={() => setSelectedJob(job)}
                             onSave={() => handleSaveJob(job.id)}
                             isSaved={true}
+                            currentStatus={statusMap[job.id] || 'Not Applied'}
+                            onStatusChange={handleStatusChange}
+                        // Pass showScore=false here as not explicit req but nice to have? User didn't ask.
+                        // But keeping consistent.
                         />
                     ))}
                 </div>

@@ -39,6 +39,18 @@ export default function FilterBar({ filters, onFilterChange, jobCount, showMatch
             <div className="filter-row" style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
                 <select
                     style={selectStyle}
+                    value={filters.status}
+                    onChange={(e) => handleChange('status', e.target.value)}
+                >
+                    <option value="all">All Status</option>
+                    <option value="Not Applied">Not Applied</option>
+                    <option value="Applied">Applied</option>
+                    <option value="Rejected">Rejected</option>
+                    <option value="Selected">Selected</option>
+                </select>
+
+                <select
+                    style={selectStyle}
                     value={filters.location}
                     onChange={(e) => handleChange('location', e.target.value)}
                 >
