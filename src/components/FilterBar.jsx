@@ -1,6 +1,6 @@
 import Input from './ui/Input';
 
-export default function FilterBar({ filters, onFilterChange }) {
+export default function FilterBar({ filters, onFilterChange, jobCount, showMatchScore }) {
 
     const handleChange = (key, value) => {
         onFilterChange(prev => ({ ...prev, [key]: value }));
@@ -23,12 +23,17 @@ export default function FilterBar({ filters, onFilterChange }) {
             flexDirection: 'column',
             gap: 'var(--space-md)'
         }}>
-            <div className="search-row">
-                <Input
-                    placeholder="Search roles or companies..."
-                    value={filters.keyword}
-                    onChange={(e) => handleChange('keyword', e.target.value)}
-                />
+            <div className="search-row" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                <div style={{ flex: 1, minWidth: '300px' }}>
+                    <Input
+                        placeholder="Search roles or companies..."
+                        value={filters.keyword}
+                        onChange={(e) => handleChange('keyword', e.target.value)}
+                    />
+                </div>
+                <div className="result-count text-muted">
+                    Showing {jobCount} jobs
+                </div>
             </div>
 
             <div className="filter-row" style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
@@ -87,8 +92,11 @@ export default function FilterBar({ filters, onFilterChange }) {
                     value={filters.sort}
                     onChange={(e) => handleChange('sort', e.target.value)}
                 >
-                    <option value="latest">Latest</option>
+                    <option value="latest">Latest (Default)</option>
                     <option value="oldest">Oldest</option>
+                    {showMatchScore && <option value="matchScore">Match Score</option>}
+                    <option value="salaryHigh">Salary (High to Low)</option>
+                    <option value="salaryLow">Salary (Low to High)</option>
                 </select>
             </div>
         </div>
