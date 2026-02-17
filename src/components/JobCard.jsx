@@ -1,139 +1,34 @@
-import { useState, useEffect } from 'react';
-import { getMatchBadgeClass } from '../utils/matchScore';
-import { getJobStatus, setJobStatus, addStatusChange, JOB_STATUSES, getStatusBadgeClass } from '../utils/statusManager';
-import Toast from './Toast';
+import Button from './ui/Button';
+import Badge from './ui/Badge';
+import Card from './ui/Card';
 
-export default function JobCard({ job, onView, onSave, isSaved, matchScore, showScore, onStatusChange }) {
-    const [status, setStatus] = useState(JOB_STATUSES.NOT_APPLIED);
-    const [showDropdown, setShowDropdown] = useState(false);
-    const [showToast, setShowToast] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
-
-    // Load status on mount
-    useEffect(() => {
-        const currentStatus = getJobStatus(job.id);
-        setStatus(currentStatus);
-    }, [job.id]);
-
-    const formatDaysAgo = (days) => {
-        if (days === 0) return "Today";
-        if (days === 1) return "Yesterday";
-        return `${days} days ago`;
-    };
-
-    const handleApply = () => {
-        window.open(job.applyUrl, '_blank', 'noopener,noreferrer');
-    };
-
-    const handleStatusChange = (newStatus) => {
-        setStatus(newStatus);
-        setJobStatus(job.id, newStatus);
-        addStatusChange(job.id, newStatus, job.title, job.company);
-        setShowDropdown(false);
-
-        // Show toast notification
-        setToastMessage(`Status updated: ${newStatus}`);
-        setShowToast(true);
-
-        // Notify parent
-        if (onStatusChange) {
-            onStatusChange(job.id, newStatus);
-        }
-    };
-
-    const handleToastClose = () => {
-        setShowToast(false);
-    };
-
+export default function JobCard({ job, onView, onSave, isSaved }) {
     return (
-        <>
-            <div className="job-card">
-                {/* Match Score Badge */}
-                {showScore && matchScore !== undefined && (
-                    <div className={`match-badge ${getMatchBadgeClass(matchScore)}`}>
-                        {matchScore}% Match
-                    </div>
-                )}
-
-                <div className="job-card__header">
-                    <h3 className="job-card__title">{job.title}</h3>
-                    <p className="job-card__company">{job.company}</p>
+        <Card>
+            <div className="job-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--space-sm)' }}>
+                <div>
+                    <h3 className="job-title" style={{ marginTop: 0, marginBottom: '4px', fontSize: '1.25rem' }}>{job.title}</h3>
+                    <p className="job-company text-muted" style={{ margin: 0, fontWeight: 500 }}>{job.company}</p>
                 </div>
-
-                <div className="job-card__meta">
-                    <div className="job-card__meta-row">
-                        <span className="job-card__location">{job.location}</span>
-                        <span className={`badge badge--mode badge--${job.mode.toLowerCase()}`}>
-                            {job.mode}
-                        </span>
-                    </div>
-                    <div className="job-card__meta-row">
-                        <span className="job-card__experience">{job.experience}</span>
-                        <span className="job-card__salary">{job.salaryRange}</span>
-                    </div>
-                </div>
-
-                {/* Status Dropdown */}
-                <div className="job-card__status">
-                    <label className="job-card__status-label">Status:</label>
-                    <div className="status-dropdown">
-                        <button
-                            className={`status-badge ${getStatusBadgeClass(status)}`}
-                            onClick={() => setShowDropdown(!showDropdown)}
-                        >
-                            {status} ▼
-                        </button>
-                        {showDropdown && (
-                            <div className="status-dropdown__menu">
-                                {Object.values(JOB_STATUSES).map((statusOption) => (
-                                    <div
-                                        key={statusOption}
-                                        className={`status-dropdown__item ${status === statusOption ? 'status-dropdown__item--active' : ''}`}
-                                        onClick={() => handleStatusChange(statusOption)}
-                                    >
-                                        <span className={`status-badge ${getStatusBadgeClass(statusOption)}`}>
-                                            {statusOption}
-                                        </span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                </div>
-
-                <div className="job-card__footer">
-                    <div className="job-card__footer-left">
-                        <span className={`badge badge--source badge--${job.source.toLowerCase()}`}>
-                            {job.source}
-                        </span>
-                        <span className="job-card__posted">{formatDaysAgo(job.postedDaysAgo)}</span>
-                    </div>
-                    <div className="job-card__footer-right">
-                        <button className="btn btn--small btn--secondary" onClick={onView}>
-                            View
-                        </button>
-                        <button
-                            className={`btn btn--small ${isSaved ? 'btn--saved' : 'btn--secondary'}`}
-                            onClick={onSave}
-                        >
-                            {isSaved ? 'Saved' : 'Save'}
-                        </button>
-                        <button className="btn btn--small btn--primary" onClick={handleApply}>
-                            Apply
-                        </button>
-                    </div>
-                </div>
+                <Badge status={job.source} />
             </div>
 
-            {/* Toast Notification */}
-            {showToast && (
-                <Toast
-                    message={toastMessage}
-                    type="success"
-                    duration={3000}
-                    onClose={handleToastClose}
-                />
-            )}
-        </>
+            <div className="job-details" style={{ display: 'flex', gap: 'var(--space-md)', flexWrap: 'wrap', marginBottom: 'var(--space-md)', fontSize: '0.9rem', color: '#555' }}>
+                <span className="detail-item">📍 {job.location} ({job.mode})</span>
+                <span className="detail-item">💼 {job.experience}</span>
+                <span className="detail-item">💰 {job.salaryRange}</span>
+                <span className="detail-item">🕒 {job.postedDaysAgo === 0 ? 'Today' : `${job.postedDaysAgo} days ago`}</span>
+            </div>
+
+            <div className="job-actions" style={{ display: 'flex', gap: 'var(--space-sm)' }}>
+                <Button variant="secondary" size="small" onClick={onView}>View</Button>
+                <Button variant={isSaved ? "primary" : "secondary"} size="small" onClick={onSave}>
+                    {isSaved ? "Saved" : "Save"}
+                </Button>
+                <a href={job.applyUrl} target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'none' }}>
+                    <Button variant="primary" size="small">Apply</Button>
+                </a>
+            </div>
+        </Card>
     );
 }

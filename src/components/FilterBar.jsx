@@ -1,136 +1,95 @@
-export default function FilterBar({ filters, onFilterChange, jobCount, showMatchScore }) {
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        onFilterChange({ ...filters, [name]: value });
+import Input from './ui/Input';
+
+export default function FilterBar({ filters, onFilterChange }) {
+
+    const handleChange = (key, value) => {
+        onFilterChange(prev => ({ ...prev, [key]: value }));
     };
 
-    const handleClear = () => {
-        onFilterChange({
-            keyword: '',
-            location: 'all',
-            mode: 'all',
-            experience: 'all',
-            source: 'all',
-            status: 'all',
-            sort: 'latest'
-        });
+    const selectStyle = {
+        padding: 'var(--space-sm)',
+        border: '2px solid var(--color-border)',
+        borderRadius: 'var(--border-radius)',
+        backgroundColor: 'var(--color-surface)',
+        fontFamily: 'var(--font-sans)',
+        fontSize: 'var(--font-size-base)',
+        minWidth: '150px'
     };
 
     return (
-        <div className="filter-bar">
-            <div className="filter-bar__header">
-                <h2 className="filter-bar__title">Filters</h2>
-                <button className="btn btn--text" onClick={handleClear}>
-                    Clear All
-                </button>
+        <div className="filter-bar" style={{
+            marginBottom: 'var(--space-lg)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 'var(--space-md)'
+        }}>
+            <div className="search-row">
+                <Input
+                    placeholder="Search roles or companies..."
+                    value={filters.keyword}
+                    onChange={(e) => handleChange('keyword', e.target.value)}
+                />
             </div>
 
-            <div className="filter-bar__controls">
-                <div className="filter-control">
-                    <input
-                        type="text"
-                        name="keyword"
-                        className="input input--search"
-                        placeholder="Search by title or company..."
-                        value={filters.keyword}
-                        onChange={handleChange}
-                    />
-                </div>
+            <div className="filter-row" style={{ display: 'flex', gap: 'var(--space-sm)', flexWrap: 'wrap' }}>
+                <select
+                    style={selectStyle}
+                    value={filters.location}
+                    onChange={(e) => handleChange('location', e.target.value)}
+                >
+                    <option value="all">All Locations</option>
+                    <option value="Bangalore">Bangalore</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Pune">Pune</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Gurgaon">Gurgaon</option>
+                    <option value="Noida">Noida</option>
+                    <option value="Chennai">Chennai</option>
+                    <option value="Remote">Remote</option>
+                </select>
 
-                <div className="filter-control">
-                    <select
-                        name="location"
-                        className="input"
-                        value={filters.location}
-                        onChange={handleChange}
-                    >
-                        <option value="all">All Locations</option>
-                        <option value="Bangalore">Bangalore</option>
-                        <option value="Hyderabad">Hyderabad</option>
-                        <option value="Pune">Pune</option>
-                        <option value="Chennai">Chennai</option>
-                        <option value="Mumbai">Mumbai</option>
-                        <option value="Noida">Noida</option>
-                        <option value="Remote">Remote</option>
-                    </select>
-                </div>
+                <select
+                    style={selectStyle}
+                    value={filters.mode}
+                    onChange={(e) => handleChange('mode', e.target.value)}
+                >
+                    <option value="all">All Modes</option>
+                    <option value="Onsite">Onsite</option>
+                    <option value="Hybrid">Hybrid</option>
+                    <option value="Remote">Remote</option>
+                </select>
 
-                <div className="filter-control">
-                    <select
-                        name="mode"
-                        className="input"
-                        value={filters.mode}
-                        onChange={handleChange}
-                    >
-                        <option value="all">All Modes</option>
-                        <option value="Remote">Remote</option>
-                        <option value="Hybrid">Hybrid</option>
-                        <option value="Onsite">Onsite</option>
-                    </select>
-                </div>
+                <select
+                    style={selectStyle}
+                    value={filters.experience}
+                    onChange={(e) => handleChange('experience', e.target.value)}
+                >
+                    <option value="all">All Experience</option>
+                    <option value="Fresher">Fresher</option>
+                    <option value="0-1 Years">0-1 Years</option>
+                    <option value="1-3 Years">1-3 Years</option>
+                </select>
 
-                <div className="filter-control">
-                    <select
-                        name="experience"
-                        className="input"
-                        value={filters.experience}
-                        onChange={handleChange}
-                    >
-                        <option value="all">All Experience</option>
-                        <option value="Fresher">Fresher</option>
-                        <option value="0-1">0-1 years</option>
-                        <option value="1-3">1-3 years</option>
-                        <option value="3-5">3-5 years</option>
-                    </select>
-                </div>
+                <select
+                    style={selectStyle}
+                    value={filters.source}
+                    onChange={(e) => handleChange('source', e.target.value)}
+                >
+                    <option value="all">All Sources</option>
+                    <option value="LinkedIn">LinkedIn</option>
+                    <option value="Naukri">Naukri</option>
+                    <option value="Indeed">Indeed</option>
+                    <option value="Campus">Campus</option>
+                </select>
 
-                <div className="filter-control">
-                    <select
-                        name="source"
-                        className="input"
-                        value={filters.source}
-                        onChange={handleChange}
-                    >
-                        <option value="all">All Sources</option>
-                        <option value="LinkedIn">LinkedIn</option>
-                        <option value="Naukri">Naukri</option>
-                        <option value="Indeed">Indeed</option>
-                    </select>
-                </div>
-
-                <div className="filter-control">
-                    <select
-                        name="status"
-                        className="input"
-                        value={filters.status || 'all'}
-                        onChange={handleChange}
-                    >
-                        <option value="all">All Statuses</option>
-                        <option value="Not Applied">Not Applied</option>
-                        <option value="Applied">Applied</option>
-                        <option value="Rejected">Rejected</option>
-                        <option value="Selected">Selected</option>
-                    </select>
-                </div>
-
-                <div className="filter-control">
-                    <select
-                        name="sort"
-                        className="input"
-                        value={filters.sort}
-                        onChange={handleChange}
-                    >
-                        <option value="latest">Latest First</option>
-                        <option value="oldest">Oldest First</option>
-                        {showMatchScore && <option value="matchScore">Match Score</option>}
-                        <option value="salaryHigh">Salary: High to Low</option>
-                        <option value="salaryLow">Salary: Low to High</option>
-                    </select>
-                </div>
-            </div>
-
-            <div className="filter-bar__results">
-                <span className="filter-bar__count">Showing {jobCount} jobs</span>
+                <select
+                    style={selectStyle}
+                    value={filters.sort}
+                    onChange={(e) => handleChange('sort', e.target.value)}
+                >
+                    <option value="latest">Latest</option>
+                    <option value="oldest">Oldest</option>
+                </select>
             </div>
         </div>
     );
