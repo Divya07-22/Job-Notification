@@ -10,6 +10,7 @@ import Proof from './pages/Proof'
 
 import TestChecklist from './pages/TestChecklist'
 import Ship from './pages/Ship'
+import DesignSystem from './pages/DesignSystem'
 
 function App() {
     return (
@@ -26,6 +27,7 @@ function App() {
                     <Route path="/jt/07-test" element={<TestChecklist />} />
                     <Route path="/jt/08-ship" element={<Ship />} />
                     <Route path="/jt/proof" element={<Proof />} />
+                    <Route path="/design" element={<DesignSystem />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
             </div>
